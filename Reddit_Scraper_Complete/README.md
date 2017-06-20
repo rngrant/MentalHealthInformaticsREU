@@ -1,4 +1,4 @@
-# Data Acquisition overview
+# Reddit Scraper overview
 
 The files in this directory are used to aquire
 and parse past reddit data. The data is aquired from
