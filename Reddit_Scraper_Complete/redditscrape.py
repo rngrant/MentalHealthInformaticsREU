@@ -16,9 +16,9 @@ startyear = input("Start year: ")
 endyear = input("End year: ")
 
 # open 'fields.csv' and read as a csv, otherwise return an error
-if open('fields.csv', 'r'):
+try:
     fields_file = open('fields.csv', 'r')
-else:
+except:
     print('Error: Could not open fields.csv')
     exit(1)
 
