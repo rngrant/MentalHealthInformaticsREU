@@ -15,8 +15,14 @@ subreddit = input("Subreddit: ")
 startyear = input("Start year: ")
 endyear = input("End year: ")
 
-# open 'fields.csv' and read as a csv, then set contents equal to fields array
-fields_file = open('fields.csv', 'r')
+# open 'fields.csv' and read as a csv, otherwise return an error
+if open('fields.csv', 'r'):
+    fields_file = open('fields.csv', 'r')
+else:
+    print('Error: Could not open fields.csv')
+    exit(1)
+
+# if fields.csv exists, enter
 reader = csv.reader(fields_file, delimiter=',', quotechar='\"')
 for words in reader:
     fields = words
