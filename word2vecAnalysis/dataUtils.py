@@ -17,3 +17,10 @@ def read(dirname,str):
                     print (fname + " has an error")
                 csvfile.close()
 
+def cleanSentence(sentence):
+    if sentence == "[deleted]":
+        return ""
+    else:
+        sentence = sentence.lower()
+        exclude = ",.;:)(123456789"
+        return ''.join(ch for ch in sentence if ch not in exclude)

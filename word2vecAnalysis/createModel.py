@@ -1,9 +1,9 @@
 import gensim, logging, os, csv
-import csvRead
+import dataUtils
 
 # Get the data from the csv
-sentences = csvRead.read('data',"selftext")
+sentences = dataUtils.read('data',"selftext")
 
 # construct and save a basic model
-model = gensim.models.Word2Vec([s.split() for s in sentences])
+model = gensim.models.Word2Vec([dataUtils.cleanSentence(s).split() for s in sentences])
 model.save('models/basicModel.model')
