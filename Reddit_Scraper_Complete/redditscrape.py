@@ -47,10 +47,10 @@ def parsejson(infile, outfile, subreddit, fields):
         	# try to load an object from line, otherwise print error and move on
         	try:
         		# load object in current line as submission
-            	submission = (json.loads(line))
-                # if object is of desired subreddit, then load its contents into csv
-            	if getValue('subreddit', submission) == subreddit:
-                	writer.writerow(list(map(lambda field: getValue(field,submission),fields)))
+			submission = (json.loads(line))
+			# if object is of desired subreddit, then load its contents into csv
+            		if getValue('subreddit', submission) == subreddit:
+                		writer.writerow(list(map(lambda field: getValue(field,submission),fields)))
     		except:
     			print('Could not read a line, moving to next one')
     # close files
