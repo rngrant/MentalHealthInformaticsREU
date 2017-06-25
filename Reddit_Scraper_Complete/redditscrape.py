@@ -29,29 +29,32 @@ for words in reader:
 
 # define a function that will read a JSONLines file with fields from fields.txt
 def parsejson(infile, outfile, subreddit, fields):
-       
-       # open csv output file, named outfile
-       csvfile = open(outfile, 'w')
-       writer = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
+	# open csv output file, named outfile
+	csvfile = open(outfile, 'w')
+    writer = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
 
-       # check to see if json has key, if not, return empty string
-       def getValue(key, submission):
-              if key in submission:
-                     return submission[key]
-              return ""
+    # check to see if json has key, if not, return empty string
+	def getValue(key, submission):
+    	if key in submission:
+        	return submission[key]
+        return ""
 
-       # open jsonlines file, iterate through each line, which is a json object,
-       with open(infile) as f:
-              # write a row of headings
-              writer.writerow(fields)
-              for line in f:
-                     # load object in current line as submission
-                     submission = (json.loads(line))
-                     # if object is of desired subreddit, then load its contents into csv
-                     if getValue('subreddit', submission) == subreddit:
-                            writer.writerow(list(map(lambda field: getValue(field,submission),fields)))
-       # close files
-       csvfile.close()
+	# open jsonlines file, iterate through each line, which is a json object,
+    with open(infile) as f:
+    	# write a row of headings
+        writer.writerow(fields)
+        for line in f:
+        	# try to load an object from line, otherwise print error and move on
+        	try:
+        		# load object in current line as submission
+			submission = (json.loads(line))
+			# if object is of desired subreddit, then load its contents into csv
+            		if getValue('subreddit', submission) == subreddit:
+                		writer.writerow(list(map(lambda field: getValue(field,submission),fields)))
+    		except:
+    			print('Could not read a line, moving to next one')
+    # close files
+    csvfile.close()
 
 # repeat over how many years user desires
 for year in range(int(startyear), int(endyear) + 1):
