@@ -2,8 +2,16 @@ import gensim, logging, os, csv
 import dataUtils
 
 # Get the data from the csv
-sentences = dataUtils.read('data',"selftext")
+sentenceStream =dataUtils.read('data',"selftext")
+sentences = [dataUtils.cleanSentence(s).split() for s in sentenceStream]
 
 # construct and save a basic model
-model = gensim.models.Word2Vec([dataUtils.cleanSentence(s).split() for s in sentences],min_count =10, sg=1, size =100)
-model.save('models/basicModel.model')
+# model = gensim.models.Word2Vec(sentences,min_count =10,
+#                                sg=1, size =300,window=5,hs=1)
+# model.save('models/basicModel.model')
+
+#construct and save usage model
+bigram_transformer = gensim.models.Phrases(sentences)
+model = gensim.models.Word2Vec(bigram_transformer[sentences],min_count =10,
+                                sg=1, size =300,window=5,hs=1)
+model.save('models/model1.model')
