@@ -4,20 +4,24 @@ import gensim, logging, os, csv
 # dirname: the name of the directory of CSVs
 # key: The name of the variable to extract from the CSV
 # returns a generator that returns the next string in the file
-def read(dirname,key):
+def read(dirname,keys):
         for fname in os.listdir(dirname):
             first = True
-            loc =0
+            locs =[]
             with open(dirname+ "/"+fname,'r') as csvfile:                
                 reader = csv.reader(csvfile,dialect='excel',delimiter=',',quotechar='\"')
                 try:
                     for row in reader :
                         # get the location the variable to extract
                         if first:
-                            loc = row.index(key)
+                            for key in keys:
+                                locs.append(row.index(key))
                             first = False
                         else:
-                            yield row[loc]                            
+                            sentence =""
+                            for loc in locs:
+                                sentence=sentence+" "+row[loc]
+                            yield sentence             
                 except:
                     print (fname + " has an error")
                 csvfile.close()
