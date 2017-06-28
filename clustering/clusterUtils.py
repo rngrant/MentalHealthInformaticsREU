@@ -13,16 +13,16 @@ corpus, and a list of all words, with their associate frequencies
 def makeClusteringObjects(kmeans,num_clusters)
     clusters =[]
     for i in range(num_clusters):
-        clusters.append( {'size':0,'freq':0,'list':[]})
-
-    assignments = kmeans.predict(X)
+        clusters.append( {'unique_words':0,'total_freq':0,'word_list':[]})
+    
+    predictions = kmeans.predict(X)
     for i in range(len(vocab_list)):
-        predicted = assignments[i]
+        cluster = predictions[i]
         word      = vocab_list[i]
         freq      = model.wv.vocab[word].count
-        clusters[predicted]['size'] += 1
-        clusters[predicted]['freq'] += freq
-        clusters[predicted]['list'].append((word,freq))
+        clusters[cluster]['unique_words'] += 1
+        clusters[cluster]['total_freq'] += freq
+        clusters[cluster]['word_list'].append((word,freq))
     return clusters
 
 """
