@@ -11,7 +11,10 @@ sentences = [dataUtils.cleanSentence(s).split() for s in sentenceStream]
 # model.save('models/basicModel.model')
 
 #construct and save usage model
-bigram_transformer = gensim.models.Phrases(sentences)
-model = gensim.models.Word2Vec(bigram_transformer[sentences],min_count =10,
+# bigram_transformer = gensim.models.Phrases(sentences)
+# Using phrase transformation
+# model = gensim.models.Word2Vec(bigram_transformer[sentences],min_count =10,
+#                               sg=1, size =300,window=5,hs=1)
+model = gensim.models.Word2Vec(sentences,min_count =10,
                                sg=1, size =300,window=5,hs=1)
 model.save('models/model1.model')
