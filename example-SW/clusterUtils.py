@@ -11,33 +11,20 @@ and uses this to generate a list of clusters formated to contain the number
 of unique words in the cluster, the total frequency of those words in the
 corpus, and a list of all words, with their associate frequencies
 """
-def makeClusteringObjects(kmeans,num_clusters, WordByFeatureMat):
+def makeClusteringObjects(word2vecModel,kmeans,vocab_list,WordByFeatureMat):
     clusters =[]
-    for i in range(num_clusters):
+    for i in range(len(kmeans.cluster_centers_)):
         clusters.append( {'unique_words':0,'total_freq':0,'word_list':[]})
     
     predictions = kmeans.predict(WordByFeatureMat)
     for i in range(len(vocab_list)):
-        cluster = predictions[i]
+        cluster   = predictions[i]
         word      = vocab_list[i]
-        freq      = model.wv.vocab[word].count
+        freq      = word2vecModel.wv.vocab[word].count
         clusters[cluster]['unique_words'] += 1
         clusters[cluster]['total_freq'] += freq
         clusters[cluster]['word_list'].append((word,freq))
     return clusters
-
-"""
-Save and load utility files
-Taken in part from:
-https://stackoverflow.com/questions/19201290/how-to-save-a-dictionary-to-a-file
-"""
-def save_clustering(clustering, name ):
-    with open('clusterings/'+ name + '.pkl', 'wb') as f:
-        pickle.dump(clustering, f, pickle.HIGHEST_PROTOCOL)
-
-def load_clustering(name ):
-    with open('clusterings/' + name + '.pkl', 'rb') as f:
-        return pickle.load(f)
 
 
   
