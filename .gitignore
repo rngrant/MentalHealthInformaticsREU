@@ -39,4 +39,5 @@
 *~
 *.csv
 *.model
+*.pkl
 __pycache__
