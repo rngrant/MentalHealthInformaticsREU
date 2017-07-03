@@ -1,4 +1,6 @@
-import gensim, logging, os, csv
+import gensim, logging, os, csv, glob
+import re
+import pandas as pd
 import pickle
 """
 Helper function for reading from a directory of CSVs
@@ -28,6 +30,20 @@ def read(dirname,keys):
                     print (fname + " has an error")
                 csvfile.close()
 
+"""
+  Helper function for reading from a directory of CSVs into a pandas dataframe    dirname: the name of the directory of CSVs
+"""
+def read_df(dirname):
+    frame = pd.DataFrame()
+    df_list =[]
+    fnames = glob.glob(dirname + "/*.csv")
+    for fname in fnames:
+        df = pd.read_csv(fname,header=0)
+        df_list.append(df)
+    frame = pd.concat(df_list)
+    return frame
+        
+
 # Takes a string and returns a cleaned version                
 def cleanSentence(sentence):
     # remove deleted sentences
@@ -37,8 +53,8 @@ def cleanSentence(sentence):
         # remove case
         sentence = sentence.lower()
         # remove special characters
-        exclude = ",.;:)([]0123456789/?*$\"!~\n^"
-        return ''.join(ch for ch in sentence if ch not in exclude)
+        exclude = "[,.;:\)\(\[\]0123456789/?*$\"!\r~\n^]"
+        return re.sub(exclude," ",sentence)
 
 
 """
