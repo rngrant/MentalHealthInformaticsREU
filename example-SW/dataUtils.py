@@ -53,8 +53,15 @@ def cleanSentence(sentence):
         # remove case
         sentence = sentence.lower()
         # remove special characters
-        exclude = "[,.;:\)\(\[\]0123456789/?*$\"!\r~\n^]"
+        exclude = "[_,.;:\)\(\[\]0123456789/?&\*$\"!\r~\n\^]"
         return re.sub(exclude," ",sentence)
+"""
+    Takes a string and returns a version where all links have been
+    replaced with the word link
+"""
+def remove_links(sentence):
+    pattern="http://[^ \n\r]*"
+    return re.sub(pattern," link ",sentence)
 
 
 """
