@@ -53,8 +53,9 @@ def cleanSentence(sentence):
         # remove case
         sentence = sentence.lower()
         # remove special characters
-        exclude = "[_,.;:\)\(\[\]0123456789/?&\*$\"!\r~\n\^]"
-        return re.sub(exclude," ",sentence)
+        exclude = "[_,.;:\)\(\[\]0123456789/?&#%+@\\=\*$\"!\r~\n\^]"
+        temp = re.sub(exclude," ",sentence)
+        return re.sub("\'","",temp)
 """
     Takes a string and returns a version where all links have been
     replaced with the word link
