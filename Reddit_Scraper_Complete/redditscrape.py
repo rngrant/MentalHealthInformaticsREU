@@ -13,6 +13,15 @@ months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"
 # prompt user for information
 startyear = input("Start year: ")
 endyear = input("End year: ")
+text = input("Posts or Comments(p/c): ")
+
+if text == 'p':
+	file = 'fields.csv'
+elif text == 'c':
+	file = 'commentFields.csv'
+else:
+	print("Error, invalid Posts/Comments input")
+	exit(0)
 
 subreddits =[]
 try:
@@ -24,11 +33,11 @@ subreddit_reader = csv.reader(subreddits_file,delimiter=',', quotechar='\"')
 for subreddits_list in subreddit_reader:
     subreddits = subreddits_list
 
-# open 'fields.csv' and read as a csv, otherwise return an error
+# open 'fields.csv' or 'commentFields.csv' and read as a csv, otherwise return an error
 try:
-    fields_file = open('fields.csv', 'r')
+    fields_file = open(file, 'r')
 except:
-    print('Error: Could not open fields.csv')
+    print('Error: Could not open fields file')
     exit(1)
 
 # if fields.csv exists, enter
@@ -73,28 +82,31 @@ def parsejson(infile,suffix, subreddits, fields):
 # repeat over how many years user desires
 for year in range(int(startyear), int(endyear) + 1):
     for month in months:
-        # create file name from year according to download format from https://files.pushshift.io
-        file_name = "RS_" + str(year) + "-" + month + ".bz2"
-        # create output file in format year-month.csv
-        csvfile = str(year) + "-" + month + ".csv"
-        # create url to download file
-        file_url = "http://files.pushshift.io/reddit/submissions/" + file_name
-        
-        # request the file
-        request = urllib.request.Request(file_url,None,headers)
-        response = urllib.request.urlopen(request)
-        # try to decompress and write the data into a temp file, if it exists(some data from 2006 and 2007 is missing)
-        try:
-            # decompress data
-            data = bz2.decompress(response.read())
-            # write into "temp" file which is overwritten for each month to save memory
-            with open("temp", "wb") as code:
-                code.write(data)
-            # call parsejson function to go through the decompressed file and select the desired fields from the desired subreddit
-            parsejson("temp", csvfile, subreddits, fields)
-        # if data is missing, print year and month of missing data
-        except:
-            print("Reddit data for the year: "+ str(year) + " and month: " + month + " is missing.")
-
+    	# create file name from year according to download format from https://files.pushshift.io
+    	if text == 'p':
+    		file_name = "RS_" + str(year) + "-" + month + ".bz2"
+    	elif text == 'c':
+    		file_name = "RS_" + str(year) + "-" + month + ".bz2"
+    	# create output file in format year-month.csv
+    	csvfile = str(year) + "-" + month + "-" + text + ".csv"
+    	# create url to download file
+    	file_url = "http://files.pushshift.io/reddit/submissions/" + file_name
+    	
+    	# request the file
+    	request = urllib.request.Request(file_url,None,headers)
+    	response = urllib.request.urlopen(request)
+    	# try to decompress and write the data into a temp file, if it exists(some data from 2006 and 2007 is missing)
+    	try:
+    		# decompress data
+    		data = bz2.decompress(response.read())
+    		# write into "temp" file which is overwritten for each month to save memory
+    		with open("temp", "wb") as code:
+    			code.write(data)
+    		# call parsejson function to go through the decompressed file and select the desired fields from the desired subreddit
+    		parsejson("temp", csvfile, subreddits, fields)
+    	# if data is missing, print year and month of missing data
+    	except:
+    		print("Reddit data for the year: "+ str(year) + " and month: " + month + " is missing.")
+    		
 # remove temp file
 os.remove("temp")
