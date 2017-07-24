@@ -91,7 +91,7 @@ for year in range(int(startyear), int(endyear) + 1):
     	if text == 'p':
     		file_name = "RS_" + str(year) + "-" + month + ".bz2"
     	elif text == 'c':
-    		file_name = "RS_" + str(year) + "-" + month + ".bz2"
+    		file_name = "RC_" + str(year) + "-" + month + ".bz2"
     	# create output file in format year-month.csv
     	csvfile = str(year) + "-" + month + "-" + text + ".csv"
     	# create url to download file
