@@ -27,6 +27,8 @@
 *.log
 *.sql
 *.sqlite
+*.txt
+*/.ipynb_checkpoints/*
 
 # OS generated files #
 ######################
