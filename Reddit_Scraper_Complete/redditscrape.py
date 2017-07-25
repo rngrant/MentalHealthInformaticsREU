@@ -3,6 +3,7 @@ import urllib.request
 import os
 import csv
 import json
+import datetime
 
 # define user_agent so http request is not denied
 user_agent = 'Chrome'
@@ -45,6 +46,10 @@ fields_reader = csv.reader(fields_file, delimiter=',', quotechar='\"')
 for words in fields_reader:
     fields = words
 
+# create a log file to write program output
+logFile = open("redditScraperLog.txt","a")
+logFile.write("NEW RUN: Time: " + str(datetime.datetime.now()) + ", Start Year: " + startyear + ", End Year: " + endyear + ", Text: " + text + "\n")
+
 # define a function that will read a JSONLines file with fields from fields.txt
 def parsejson(infile,suffix, subreddits, fields):
 	# open csv output files, with the given suffix
@@ -85,12 +90,15 @@ for year in range(int(startyear), int(endyear) + 1):
     	# create file name from year according to download format from https://files.pushshift.io
     	if text == 'p':
     		file_name = "RS_" + str(year) + "-" + month + ".bz2"
+    		# create url to download file
+    		file_url = "http://files.pushshift.io/reddit/submissions/" + file_name
     	elif text == 'c':
-    		file_name = "RS_" + str(year) + "-" + month + ".bz2"
+    		file_name = "RC_" + str(year) + "-" + month + ".bz2"
+    		# create url to download file
+    		file_url = "http://files.pushshift.io/reddit/comments/" + file_name
     	# create output file in format year-month.csv
     	csvfile = str(year) + "-" + month + "-" + text + ".csv"
-    	# create url to download file
-    	file_url = "http://files.pushshift.io/reddit/submissions/" + file_name
+    	
     	
     	# request the file
     	request = urllib.request.Request(file_url,None,headers)
@@ -106,7 +114,11 @@ for year in range(int(startyear), int(endyear) + 1):
     		parsejson("temp", csvfile, subreddits, fields)
     	# if data is missing, print year and month of missing data
     	except:
-    		print("Reddit data for the year: "+ str(year) + " and month: " + month + " is missing.")
+    		logFile.write("Reddit data for the year: "+ str(year) + " and month: " + month + " is missing." + "\n")
     		
 # remove temp file
-os.remove("temp")
+if os.path.isfile("temp"):
+	os.remove("temp")
+# write lines to log file to separate runs, then close log file
+logFile.write("\n\n\n")
+logFile.close()
