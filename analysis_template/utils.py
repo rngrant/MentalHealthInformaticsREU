@@ -143,7 +143,7 @@ def make_post_clusters(kmeans,PostsByXMat,scores,num_comments_list):
         clusters.append( {'total_posts':0,'post_list':[],
                           'center':list(zip(kmeans.cluster_centers_[i].tolist(),range(1,1+num_clusters)))})
     predictions = kmeans.predict(PostsByXMat)
-    posts_vecs = PostsByXMat.toarray().tolist()
+    posts_vecs = PostsByXMat.tolist()
     for i in range(len(posts_vecs)):
         cluster = predictions[i]
         clusters[cluster]['total_posts'] +=1
