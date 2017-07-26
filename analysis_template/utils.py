@@ -138,17 +138,18 @@ and uses this to generate a list of clusters formated to contain the number
 """
 def make_post_clusters(kmeans,PostsByXMat,scores,num_comments_list):
     clusters =[]
-    num_clusters=len(kmeans.cluster_centers_)
-    for i in range(num_clusters):
+    num_post_clusters = len(kmeans.cluster_centers_)
+    num_features = len(kmeans.cluster_centers_[0])
+    for i in range(num_post_clusters):
         clusters.append( {'total_posts':0,'post_list':[],
-                          'center':list(zip(kmeans.cluster_centers_[i].tolist(),range(1,1+num_clusters)))})
+                          'center':list(zip(kmeans.cluster_centers_[i].tolist(),range(1,1+num_features)))})
     predictions = kmeans.predict(PostsByXMat)
     posts_vecs = PostsByXMat.tolist()
     for i in range(len(posts_vecs)):
         cluster = predictions[i]
         clusters[cluster]['total_posts'] +=1
         clusters[cluster]['post_list'].append({'score':scores[i], 'num_comments':num_comments_list[i],
-                                              'vector':list(zip(posts_vecs[i],range(1,1+num_clusters)))})
+                                              'vector':list(zip(posts_vecs[i],range(1,1+num_features)))})
     for cluster in clusters:
         cluster['post_list'].sort(key = (lambda x: x['score']))
         total_score=0
