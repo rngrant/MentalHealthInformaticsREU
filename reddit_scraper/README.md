@@ -1,4 +1,4 @@
-# Reddit Scraper overview
+# Overview:
 
 The files in this directory are used to aquire and parse past reddit data. The data is aquired from http://files.pushshift.io/ in line delimited JSON format, and is parsed to a CSV containing selected fields from specific subreddits. The fields for submissions should be specified in 'fields.csv', the fields for comments should be specified in 'commentFields.csv', and  subreddits should be specified in 'subreddits.csv'. This program returns entire years of data, from which one can further filter the data one needs if neccessary.
 
