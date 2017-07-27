@@ -27,13 +27,14 @@ You can execute
 
 `git clone https://github.com/pages0/MentalHealthInformaticsREU.git`
 
-In the directory in which you wish to work, which should also have the key pair from amazon web services(keyname.pem). Once downloaded, you can move the reddit scraper files from the folder inmoreg
-`cd MentalHealthInformaticsREU/reddit_scraper`
-`mv *  ../..`
-`cd ../..`
-`rm -r MentalHealthInformaticsREU` (respond `y` to both prompts)
-`ls`
+In the directory in which you wish to work, which should also have the key pair from amazon web services(keyname.pem). Once downloaded, you can move the reddit scraper files from the folder by executing
 
+```
+cd MentalHealthInformaticsREU/reddit_scraper
+mv *  ../..
+cd ../..
+ls
+```
 Now, README.md, fields.csv, commentFields.csv, subreddits.csv, and redditscrape.py should all be in your directory with the key.pem file that you made. By running ls, you should have seen these files.
 
 ## Running the Program
@@ -45,11 +46,13 @@ NOTE: Be sure that the keys and subreddit names are ONLY separated by commas, an
 
 Then, going back to the command line, you must transfer these files over to the server you created. First you must obtain the public IP address of the instance you created. This can be found in the EC2 dashboard, by clicking running instances, and selecting your instance. The public IP address will be listed on the right side in the information window beneath the list of instances. Copy that address. Then in the command line execute
 
-`chmod 400 [key].pem`
-`scp -i [key].pem redditscrape.py ubuntu@[public IP address]:~ `
-`scp -i [key].pem fields.csv ubuntu@[public IP address]:~ `
-`scp -i [key].pem commentFields.csv ubuntu@[public IP address]:~ `
-`scp -i [key].pem subreddits.csv ubuntu@[public IP address]:~ `
+```
+chmod 400 [key].pem
+scp -i [key].pem redditscrape.py ubuntu@[public IP address]:~
+scp -i [key].pem fields.csv ubuntu@[public IP address]:~
+scp -i [key].pem commentFields.csv ubuntu@[public IP address]:~
+scp -i [key].pem subreddits.csv ubuntu@[public IP address]:~
+```
 
 Where you replace [key] with the name of your key and [public IP address] with the public IP you copied earlier. Running chmod 400 changes the permissions on the key to make it more secure, and bypasses an error which may be raised when connecting to the virtual machine. REMEMBER to include the :~ at the end of the command or else you will get an error! This tells scp where to copy the file. If this command was successful then you should see a line with 100%, the file name, and other information. Then, we must connect to the ec2 instance, and download python3.6.
 
@@ -63,28 +66,31 @@ Again, where you replace [key] with the name of the your key and [public IP addr
 
 The files present should be redditscrape.py, fields.csv, commentFields.csv, and subreddits.csv. To download python3.6, enter the following commands: NOTE: press enter at the prompt of the first command, and ‘y’ at the prompt of the third command
 
-`sudo add-apt-repository ppa:jonathonf/python-3.6`
-`sudo apt-get update`
-`sudo apt-get install python3.6`
-
+```
+sudo add-apt-repository ppa:jonathonf/python-3.6
+sudo apt-get update
+sudo apt-get install python3.6
+```
 After this has been completed, you are are ready to run the code!
 
 Simply run the program and answer the prompts, being sure to answer the prompts with correct spelling. Run by executing
 
-`python3.6 redditscrape.py`
-`[Answer the prompts]`
-`“Ctrl” + “Z”`
-`bg`
-`disown -h %1`
+```
+python3.6 redditscrape.py        [Answer the prompts]
+“Ctrl” + “Z”
+bg
+disown -h %1
+```
 
-
-The last three commands are very important to execute so that you can disconnect from the server and the process will continue to run. To check the status, simply execute ‘ps -ef’, and look for the python3.6 command. The program will search for ‘fields.csv and subreddits.csv’, so be sure to include it, otherwise it will exit with a message. To fetch only 1 year of data, enter start year and end year as the same year. NOTE: be sure to find out when your desired subreddit was created, as it may not have existed in all of reddit’s history, which would return no usable data for you.
+The last three commands are very important to execute so that you can disconnect from the server and the process will continue to run. To check the status, simply execute `ps -ef`, and look for the python3.6 command. The program will search for ‘fields.csv', 'commentFields.csv', and 'subreddits.csv’, so be sure to include it, otherwise it will exit with a message. To fetch only 1 year of data, enter start year and end year as the same year. NOTE: be sure to find out when your desired subreddit was created, as it may not have existed in all of reddit’s history, which would return no usable data for you.
 
 ## Retrieving the data
 Once a month is completed, which occurs if the next month’s csv has been created or the process ends, you will be able to retrieve completed data from the virtual machine. To do so, open a new terminal window on your local machine, and navigate to the directory which contains your [key].pem file using ‘ls’, which lists the contents of your directory, and cd [directory name], which moves you into a directory which is in your current directory. To go to the parent directory, execute ‘cd ..’. Again, you will need the public IP address of your instance. After navigating to the directory which has [key].pem in it, execute the following code to retrieve your data which is in the format year-month.csv:
 
-`mkdir RedditData`
-`scp -i [key].pem ubuntu@[public IP address]:[year]-[month].csv RedditData`
+```
+mkdir RedditData
+scp -i [key].pem ubuntu@[public IP address]:[year]-[month].csv RedditData
+```
 
 Repeat this for as many files as you have on the server, replacing [key] with the name of the private key you have, and [public IP address] with the public IP address you copied. You will also have to change the name of the file you are copying over for each month you want copied. For example, if I wanted to copy over the file from January 2006, I would use 2006-01.csv. This will copy files into a directory called RedditData(this also makes the ‘scp’ command easier since the destination path is very simple), from which you can easily access the data. If you like, you can use ‘ssh’ to get into the virtual machine and use the ‘rm [filename]’ command to free up space if you have a particularly large range of years of data.
 
