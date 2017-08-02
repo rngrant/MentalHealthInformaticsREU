@@ -36,10 +36,10 @@ def read(dirname,keys):
 """
   Helper function for reading from a directory of CSVs into a pandas dataframe    dirname: the name of the directory of CSVs
 """
-def read_df(dirname):
+def read_df(dirname, extension = "/*.csv"):
     frame = pd.DataFrame()
     df_list =[]
-    fnames = glob.glob(dirname + "/*.csv")
+    fnames = glob.glob(dirname + extension)
     for fname in fnames:
         df = pd.read_csv(fname,header=0)
         df_list.append(df)
