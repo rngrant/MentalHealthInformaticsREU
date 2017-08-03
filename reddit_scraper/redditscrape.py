@@ -47,8 +47,8 @@ for words in fields_reader:
     fields = words
 
 # create a log file to write program output
-logFile = open("redditScraperLog.txt","a")
-logFile.write("NEW RUN: Time: " + str(datetime.datetime.now()) + ", Start Year: " + startyear + ", End Year: " + endyear + ", Text: " + text + "\n")
+with open("log.txt", "a") as f:
+	f.write("NEW RUN: Time: " + str(datetime.datetime.now()) + ", Start Year: " + startyear + ", End Year: " + endyear + ", Text: " + text + "\n")
 
 # define a function that will read a JSONLines file with fields from fields.txt
 def parsejson(infile,suffix, subreddits, fields):
@@ -56,7 +56,7 @@ def parsejson(infile,suffix, subreddits, fields):
     csvfiles = []
     writers  = []
     for i in range(len(subreddits)):
-        csvfile = open(subreddits[i]+"_"+suffix, 'w')
+        csvfile = open(subreddits[i] + "_" + suffix, 'w')
         writer = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
         csvfiles.append(csvfile)
         writers.append(writer)
@@ -99,14 +99,17 @@ for year in range(int(startyear), int(endyear) + 1):
     	# create output file in format year-month.csv
     	csvfile = str(year) + "-" + month + "-" + text + ".csv"
     	
-    	
-    	# request the file
-    	request = urllib.request.Request(file_url,None,headers)
+    	# request the file from the current year and month
+    	request = urllib.request.Request(file_url, None, headers)
     	response = urllib.request.urlopen(request)
     	# try to decompress and write the data into a temp file, if it exists(some data from 2006 and 2007 is missing)
     	try:
     		# decompress data
-    		data = bz2.decompress(response.read())
+    		try:
+    			data = bz2.decompress(response.read())
+    		except:
+    			with open("log.txt", "a") as f:
+    				f.write("Reddit data for the month: " + month + " and year: " + str(year) + " is missing." + "\n")
     		# write into "temp" file which is overwritten for each month to save memory
     		with open("temp", "wb") as code:
     			code.write(data)
@@ -114,11 +117,12 @@ for year in range(int(startyear), int(endyear) + 1):
     		parsejson("temp", csvfile, subreddits, fields)
     	# if data is missing, print year and month of missing data
     	except:
-    		logFile.write("Reddit data for the year: "+ str(year) + " and month: " + month + " is missing." + "\n")
-    		
+    		with open("log.txt", "a") as f:
+    			f.write("Error processing Reddit data for the month: " + month + " and year: " + str(year) + "\n")
+
 # remove temp file
 if os.path.isfile("temp"):
 	os.remove("temp")
-# write lines to log file to separate runs, then close log file
-logFile.write("\n\n\n")
-logFile.close()
+# write lines to log file to separate runs
+with open("log.txt", "a") as f:
+	f.write("\n\n\n")
