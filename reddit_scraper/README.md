@@ -2,12 +2,8 @@
 
 The files in this directory are used to aquire and parse past reddit data. The data is aquired from http://files.pushshift.io/ in line delimited JSON format, and is parsed to a CSV containing selected fields from specific subreddits. The fields for submissions should be specified in 'fields.csv', the fields for comments should be specified in 'commentFields.csv', and  subreddits should be specified in 'subreddits.csv'. This program returns entire years of data, from which one can further filter the data one needs if neccessary.
 
-If acquiring submissions, the program needs at least 20 GB of RAM, as the
-decompressed files reach up to 18 GB in size. One can do this
-while running an ec2 instance, t2.2xlarge, with 30GiB in EBS Storage.
-
-If acquiring comments, the program will need more resources, as the files are larger.
-We recommend about 60 GB of RAM and Storage, which can be achieved with an m4.4xlarge instance.
+The program needs a considerable amount of resources, as the files can be quite large. One can do this
+while running an ec2 instance with more than 30 GB of RAM and storage.
 
 # Tutorial:
 This is a walkthrough of our process of obtaining reddit archives on posts. A limitation of reddit is that they store a limited amount of posts on each subreddit, in the case of the subreddit SuicideWatch, only the past 1000 posts were available, which limited the data we could get through the use of the Reddit API. That being said, the Reddit API could be very useful if one needs very recent posts. Our exploration with that is described in a different document.
@@ -16,7 +12,7 @@ This is a walkthrough of our process of obtaining reddit archives on posts. A li
 
 To run the python scraper, you will likely need to launch a virtual machine through some server. We used Amazon web services. To do this, you can create an amazon web services account, and create an EC2 instance. We recommend creating an Ubuntu 16.04 instance because it allows you to use Python 3.6 which we used to write the program. 
 
-When setting up the instance, you will need to select an instance type that has at least 20 GB of both RAM and storage for submissions, and about 60 GB for comments, as the files are larger. We recommend the m4.4xlarge instance with 64GB of EBS storage, however, the t2.2xlarge instance with 20 GB should work to collect just the submissions. If you run into an error wherein you cannot collect data or the program seems to not be making any progress, consider creating a new instance with more RAM and storage, as this is likely the issue.
+When setting up the instance, you will need to select an instance type that has at least 30 GB of both RAM and storage, to be on the safe side. If you run into an error where you cannot collect data or the program seems to not be making any progress, consider creating a new instance with more RAM and storage, as this is likely the issue.
 
 Once these are selected, you can select ‘Review and Launch’, and Launch your instance. There will be a notification about security keys. If you have a key pair already made, you can use that, otherwise make a new key pair, and download it into the directory in which you wish to work.
 
