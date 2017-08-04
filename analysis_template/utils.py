@@ -41,8 +41,11 @@ def read_df(dirname, extension = "/*.csv"):
     df_list =[]
     fnames = glob.glob(dirname + extension)
     for fname in fnames:
-        df = pd.read_csv(fname,header=0)
-        df_list.append(df)
+        try:
+            df = pd.read_csv(fname,header=0)
+            df_list.append(df)
+        except:
+            print ("Couldn't read :", fname)
     frame = pd.concat(df_list)
     return frame
         
