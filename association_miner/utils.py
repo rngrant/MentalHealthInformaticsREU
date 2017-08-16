@@ -41,11 +41,8 @@ def read_df(dirname, extension = "/*.csv"):
     df_list =[]
     fnames = glob.glob(dirname + extension)
     for fname in fnames:
-        try:
-            df = pd.read_csv(fname,header=0)
-            df_list.append(df)
-        except:
-            print ("Couldn't read :", fname)
+        df = pd.read_csv(fname,header=0)
+        df_list.append(df)
     frame = pd.concat(df_list)
     return frame
         
@@ -173,3 +170,9 @@ def make_post_clusters(kmeans,PostsByXMat,scores,num_comments_list):
         cluster['comments_mean'] = total_comments/cluster['total_posts']
         cluster['comments_median']  = cluster['post_list'][midpoint]['num_comments']
     return clusters
+
+
+def wrapper(func, *args, **kwargs):
+    def wrapped():
+        return func(*args, **kwargs)
+    return wrapped
