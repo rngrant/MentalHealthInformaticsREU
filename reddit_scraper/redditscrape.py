@@ -12,24 +12,28 @@ headers={'User-Agent':user_agent}
 months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
 
 # prompt user for information
-startyear = input("Start year: ")
-endyear = input("End year: ")
-text = input("Posts or Comments(p/c): ")
+startyear = input('Start year: ')
+endyear = input('End year: ')
+text = input('Posts or Comments? (p/c): ').lower()
+allUserPosts = input('User Posts from All of Reddit? (y/n): ').lower()
 
 if text == 'p':
 	file = 'fields.csv'
 elif text == 'c':
 	file = 'commentFields.csv'
 else:
-	print("Error, invalid Posts/Comments input")
-	exit(0)
+	print('Error, invalid Posts/Comments input')
+	exit(1)
+
+if (allUserPosts != 'y') and (allUserPosts != 'n'):
+	print('Error, invalid User Posts input')
 
 subreddits =[]
 try:
     subreddits_file = open('subreddits.csv', 'r')
 except:
     print('Error: Could not open subreddits.csv')
-    exit(1)
+    exit(2)
 subreddit_reader = csv.reader(subreddits_file,delimiter=',', quotechar='\"')
 for subreddits_list in subreddit_reader:
     subreddits = subreddits_list
@@ -39,7 +43,7 @@ try:
     fields_file = open(file, 'r')
 except:
     print('Error: Could not open fields file')
-    exit(1)
+    exit(2)
 
 # if fields.csv exists, enter
 fields_reader = csv.reader(fields_file, delimiter=',', quotechar='\"')
@@ -48,18 +52,20 @@ for words in fields_reader:
 
 # create a log file to write program output
 with open("log.txt", "a") as f:
-	f.write("NEW RUN: Time: " + str(datetime.datetime.now()) + ", Start Year: " + startyear + ", End Year: " + endyear + ", Text: " + text + "\n")
+	f.write("NEW RUN: Time: " + str(datetime.datetime.now()) + ", Start Year: " + startyear + ", End Year: " + endyear + ", Text: " + text + ", All User Posts: " + allUserPosts + "\n")
 
 # define a function that will read a JSONLines file with fields from fields.txt
-def parsejson(infile,suffix, subreddits, fields):
+def parsejson(infile, suffix, subreddits, fields):
 	# open csv output files, with the given suffix
     csvfiles = []
     writers  = []
+    users = []
     for i in range(len(subreddits)):
         csvfile = open(subreddits[i] + "_" + suffix, 'w')
         writer = csv.writer(csvfile, delimiter=',', quotechar='\"', quoting=csv.QUOTE_MINIMAL)
         csvfiles.append(csvfile)
         writers.append(writer)
+        users.append([])
     # check to see if json has key, if not, return empty string
     def getValue(key, submission):
         if key in submission:
@@ -76,12 +82,24 @@ def parsejson(infile,suffix, subreddits, fields):
                 # load object in current line as submission
             submission = (json.loads(line))
                 # if object is of desired subreddit, then load its contents into csv
-            for i in range(len(subreddits)):
-                if getValue('subreddit', submission) == subreddits[i]:
-                    writers[i].writerow(list(map(lambda field: getValue(field,submission),fields)))
+            # if the user required all user posts, find all users within a particular subreddit, with no duplicates
+            if allUserPosts == 'y':
+            	for i in range(len(subreddits)):
+            		if getValue('subreddit', submission) == subreddits[i]:
+            			if not (getValue('author', submission) in users[i]):
+            				users[i].append(getValue('author', submission))
+            	# write all posts by those particular users
+            	for i in range(len(subreddits)):
+            		if getValue('author', submission) in users[i]:
+            			writers[i].writerow(list(map(lambda field: getValue(field,submission),fields)))
+            # else, if object is of desired subreddit, then load its contents into csv
+            elif allUserPosts == 'n':
+            	for i in range(len(subreddits)):
+            		if getValue('subreddit', submission) == subreddits[i]:
+            			writers[i].writerow(list(map(lambda field: getValue(field,submission),fields)))
     # close files
     for csvfile in csvfiles:
-        csvfile.close()
+    	csvfile.close()
 
 
 # repeat over how many years user desires
@@ -97,7 +115,10 @@ for year in range(int(startyear), int(endyear) + 1):
     		# create url to download file
     		file_url = "http://files.pushshift.io/reddit/comments/" + file_name
     	# create output file in format year-month.csv
-    	csvfile = str(year) + "-" + month + "-" + text + ".csv"
+    	if allUserPosts == 'y':
+    		csvfile = str(year) + "-" + month + "-" + text + "-U" + ".csv"
+    	else:
+    		csvfile = str(year) + "-" + month + "-" + text + ".csv"
     	
     	# request the file from the current year and month
     	request = urllib.request.Request(file_url, None, headers)
