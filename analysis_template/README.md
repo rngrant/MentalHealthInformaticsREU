@@ -38,7 +38,7 @@ This notebook attempts to help visualize the clusters created by using Multi-Dim
 This creates clusters of posts to find similar sets of posts based on both the features (words) and clusters they contained.
 
 ### Association_analysis.ipynb
-This creates association rules between the clusters.
+This creates analyzes and formats association rules between clusters. Generate these rules using the association_miner directory.
 
 ### Subreddit_user_analysis.ipynb
 This notebook filters out '[deleted]' users and calculates percentages of users posting within each subreddit present in the dataset.
