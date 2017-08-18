@@ -81,8 +81,7 @@ def mine_associations(model_name,num_word_clusters,itemset_support,assoc_confide
     assoc_rules = association_rules(itemsets, assoc_confidence/100)
     print("starting parsing rules")
     rules = [(P, Q, supp, conf, conf/(itemsets[P]/X.shape[0]))
-             for P, Q, supp, conf in assoc_rules
-             if len(Q) == 1 and len(P)==1]
+             for P, Q, supp, conf in assoc_rules]
     print("parsed rules")
     print("saving rules")
     sys.stdout.flush()

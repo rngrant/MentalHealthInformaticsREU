@@ -2,8 +2,8 @@ import associations
 import datetime
 import sys
 
-support_vals = [35,30,25,20]
-confidence_vals  = [95,90,85,80]
+support_vals = [10]
+confidence_vals  = [50]
 
 import os
 directories = ['association_rules', 'itemsets']
